@@ -4,7 +4,7 @@ import setGameUp  from "./game/index.js"
 const rootHtmlElement = document.getElementById("root");
 
 const api = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "https://genius-mysql-api.herokuapp.com/",
 });
 
 renderInicialScren()
