@@ -5,8 +5,8 @@ const rootHtmlElement = document.getElementById("root");
 
 renderInicialScren()
 
-function renderInicialScren (isLogin = true, lastForm) {
-  if(lastForm) rootHtmlElement.removeChild(lastForm)
+function renderInicialScren (isLogin = true) {
+  rootHtmlElement.innerHTML = ""
 
   const signInForm = createHtmlElement("form");
 
@@ -24,7 +24,7 @@ function renderInicialScren (isLogin = true, lastForm) {
 
   const changeFormButton = createHtmlElement("button");
   changeFormButton.innerHTML = isLogin? "Ou cadastre-se" : "Ou entre";
-  changeFormButton.addEventListener("click", () =>renderInicialScren(!isLogin, signInForm))
+  changeFormButton.addEventListener("click", () =>renderInicialScren(!isLogin))
 
   signInForm.addEventListener("submit", (e) => submitForm(nameInput.value, passwordInput.value, isLogin, e))
 
@@ -36,13 +36,23 @@ function renderInicialScren (isLogin = true, lastForm) {
   rootHtmlElement.appendChild(signInForm)
 }
 
-function submitForm (name, password, isLogin, e) {
+async function submitForm (username, password, isLogin, e) {
   e.preventDefault()
 
-  if(!isLogin) return
+  const url = `http://localhost:4000/${isLogin? "sign-in": "sign-up"}`
+
+  axios.post(url,{username, password})
+  .then(()=>{
+    if(!isLogin) return renderInicialScren()
+    
+    renderGameScreen()
+    setGameUp().play()
+  })
+  .catch(()=>{
+    alert("algo deu errado")
+  })
   
-  renderGameScreen()
-  setGameUp().play()
+  
 }
 
 function renderGameScreen () {
