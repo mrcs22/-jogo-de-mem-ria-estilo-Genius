@@ -21,6 +21,8 @@ const shuffleOrder = () => {
       const elementColor = getColorHtmlElement(order[i]);
       lightColor(elementColor, Number(i) + 1 );
     }
+
+    console.log(order);
   })
   .catch(()=>alert("Algo deu errado 2"))
 
@@ -46,12 +48,19 @@ const checkOrder = () =>{
     }
   }
 
-  if(clickedOrder.length == order.length){
-    axios.post(`http://localhost:4000/moves/${clickedOrder[clickedOrder.length -1]}`,{}, axiosConfig)
-    .then(nextLevel)
-    .catch(()=>alert("Algo deu errado 2"))
+  
+
+  if(clickedOrder.length == order.length ){
+    let nextMove = "end";
     
+    if(order.length > 0) nextMove = clickedOrder[clickedOrder.length -1]
+
+   axios.post(`http://localhost:4000/moves/${nextMove}`,{}, axiosConfig)
+   .then(nextLevel)
+   .catch(()=>alert("Algo deu errado 2"))
   }
+
+ 
 }
 
 const selectOrder = (color) =>{
