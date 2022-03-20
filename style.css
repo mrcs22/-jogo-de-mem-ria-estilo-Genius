@@ -39,6 +39,30 @@ form > button {
   cursor: pointer;
 }
 
+table {
+  width: 150px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  border: 1px solid gray;
+}
+th {
+  text-align: left;
+  padding-left: 5px;
+}
+
+td:first-child {
+  padding-left: 5px;
+}
+
+td:last-child {
+  text-align: center;
+}
+tr:nth-child(2n) {
+  background-color: rgb(173, 233, 213);
+}
+
 .main-game {
   height: 100vh;
   width: 100vw;
@@ -113,5 +137,9 @@ form > button {
 
   form > input {
     width: 50vw;
+  }
+
+  .start-button {
+    left: calc(50px);
   }
 }

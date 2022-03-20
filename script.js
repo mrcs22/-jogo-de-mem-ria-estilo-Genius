@@ -3,8 +3,12 @@ import setGameUp  from "./game/index.js"
 
 const rootHtmlElement = document.getElementById("root");
 
+const api = axios.create({
+  baseURL: "http://localhost:4000",
+});
 
 renderInicialScren()
+renderScoresTable()
 
 function renderInicialScren (isLogin = true) {
   rootHtmlElement.innerHTML = ""
@@ -27,7 +31,7 @@ function renderInicialScren (isLogin = true) {
   changeFormButton.innerHTML = isLogin? "Ou cadastre-se" : "Ou entre";
   changeFormButton.addEventListener("click", () =>renderInicialScren(!isLogin))
 
-  signInForm.addEventListener("submit", (e) => submitForm(nameInput.value, passwordInput.value, isLogin, e))
+  signInForm.addEventListener("submit", (e) => submitForm(nameInput.value, passwordInput.value, isLogin, submitInput, e))
 
   signInForm.appendChild(nameInput)
   signInForm.appendChild(passwordInput)
@@ -37,23 +41,62 @@ function renderInicialScren (isLogin = true) {
   rootHtmlElement.appendChild(signInForm)
 }
 
-async function submitForm (username, password, isLogin, e) {
+async function submitForm (username, password, isLogin,formSubmitButton, e) {
   e.preventDefault()
 
-  const url = `http://localhost:4000/${isLogin? "sign-in": "sign-up"}`
+  formSubmitButton.setAttribute("value", "Aguarde");
 
-  axios.post(url,{username, password})
+  const endpoint = `/${isLogin? "sign-in": "sign-up"}`
+
+  api.post(endpoint,{username, password})
   .then(({data})=>{
     if(!isLogin) return renderInicialScren()
 
     renderGameScreen()
-    setGameUp(data.token)
+    setGameUp(data.token, renderScoresTable, api)
+  })
+  .catch(()=>{
+    alert("algo deu errado")
+    formSubmitButton.setAttribute("value", isLogin? "entrar" : "cadastrar");
+  })
+   
+}
+
+function renderScoresTable(){
+  const table = document.querySelector("table")
+  table.innerHTML = ""
+
+  const usernameTableHeader = createHtmlElement("th")
+  usernameTableHeader.innerHTML = "username"
+  
+  const scoreTableHeader = createHtmlElement("th") 
+  scoreTableHeader.innerHTML="score"
+  
+  table.appendChild(usernameTableHeader)
+  table.appendChild(scoreTableHeader)
+
+  api.get(`/scores/top`)
+  .then(({data})=>{
+    data.forEach(d=>{
+      const tableRow = createHtmlElement("tr");
+
+      const usernameTableColumn = createHtmlElement("td")
+      const pointsTableColumn = createHtmlElement("td")
+
+      usernameTableColumn.innerHTML = d.username;
+      pointsTableColumn.innerHTML = d.points;
+
+      tableRow.appendChild(usernameTableColumn)
+      tableRow.appendChild(pointsTableColumn)
+      table.appendChild(tableRow)
+
+    })
+  
   })
   .catch(()=>{
     alert("algo deu errado")
   })
-  
-  
+
 }
 
 function renderGameScreen () {

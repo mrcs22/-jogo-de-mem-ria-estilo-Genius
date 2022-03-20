@@ -2,7 +2,7 @@ let order = [];
 let clickedOrder = [];
 let score = 0;
 
-function setGameUp(userToken){
+function setGameUp(userToken, renderScoresTable, api){
 const blue = document.querySelector(".blue");
 const red = document.querySelector(".red");
 const green = document.querySelector(".green");
@@ -12,10 +12,8 @@ const axiosConfig = {headers:{authorization: `Bearer ${userToken}`}}
 
 const startButton = document.querySelector(".start-button")
 
-
-
 const shuffleOrder = () => {
-  axios.get("http://localhost:4000/moves", axiosConfig)
+  api.get("/moves", axiosConfig)
   .then(({data})=>{
     order.push(data.nextMove);
     clickedOrder = [];
@@ -25,9 +23,12 @@ const shuffleOrder = () => {
       lightColor(elementColor, Number(i) + 1 );
     }
 
-    console.log(order);
+    startButton.innerHTML = "Recomeçar" 
   })
-  .catch(()=>alert("Algo deu errado 2"))
+  .catch(()=>{
+    alert("Algo deu errado 2");
+    startButton.innerHTML = "Começar"
+  })
 
 }
 
@@ -55,15 +56,18 @@ const checkOrder = () =>{
     let nextMove = "end";
     
     if(order.length > 0) nextMove = clickedOrder[clickedOrder.length -1]
-
-   axios.post(`http://localhost:4000/moves/${nextMove}`,{}, axiosConfig)
+    
+    startButton.innerHTML = "Carregando"
+   
+    api.post(`/moves/${nextMove}`,{}, axiosConfig)
    .then(nextLevel)
    .catch(()=>alert("Algo deu errado 2"))
   }
 }
 
 const selectOrder = (color) =>{
-  
+ 
+
   clickedOrder[clickedOrder.length] = color;
   getColorHtmlElement(color).classList.add("selected");
 
@@ -93,6 +97,7 @@ const gameOver = () =>{
  alert(`Você Errou. Score: ${score}`)
 
  startButton.innerHTML="Recomeçar"
+ renderScoresTable()
 
   order = [];
   clickedOrder = [];
@@ -100,6 +105,8 @@ const gameOver = () =>{
 
 const playGame = () =>{
   score = 0;
+
+  startButton.innerHTML = "Carregando"
 
   setTimeout(nextLevel, 500)
 }
