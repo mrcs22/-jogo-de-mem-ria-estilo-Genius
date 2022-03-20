@@ -10,6 +10,9 @@ const yellow = document.querySelector(".yellow");
 
 const axiosConfig = {headers:{authorization: `Bearer ${userToken}`}}
 
+const startButton = document.querySelector(".start-button")
+
+
 
 const shuffleOrder = () => {
   axios.get("http://localhost:4000/moves", axiosConfig)
@@ -48,8 +51,6 @@ const checkOrder = () =>{
     }
   }
 
-  
-
   if(clickedOrder.length == order.length ){
     let nextMove = "end";
     
@@ -59,8 +60,6 @@ const checkOrder = () =>{
    .then(nextLevel)
    .catch(()=>alert("Algo deu errado 2"))
   }
-
- 
 }
 
 const selectOrder = (color) =>{
@@ -72,8 +71,6 @@ const selectOrder = (color) =>{
     getColorHtmlElement(color).classList.remove("selected");
     checkOrder();
   },250 )
-
-  
 }
 
 const getColorHtmlElement = (color) =>{
@@ -95,15 +92,19 @@ const nextLevel = () =>{
 const gameOver = () =>{
  alert(`Você Errou. Score: ${score}`)
 
+ startButton.innerHTML="Recomeçar"
+
   order = [];
   clickedOrder = [];
 }
 
-let playGame = () =>{
+const playGame = () =>{
   score = 0;
 
   setTimeout(nextLevel, 500)
 }
+
+startButton.addEventListener("click", playGame)
 
 green.addEventListener("click", () => selectOrder(0));
 red.addEventListener("click", () => selectOrder(1));

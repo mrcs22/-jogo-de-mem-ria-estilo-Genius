@@ -47,7 +47,7 @@ async function submitForm (username, password, isLogin, e) {
     if(!isLogin) return renderInicialScren()
 
     renderGameScreen()
-    setGameUp(data.token).play()
+    setGameUp(data.token)
   })
   .catch(()=>{
     alert("algo deu errado")
