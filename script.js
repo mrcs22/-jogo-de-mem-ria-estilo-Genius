@@ -3,6 +3,7 @@ import setGameUp  from "./game/index.js"
 
 const rootHtmlElement = document.getElementById("root");
 
+
 renderInicialScren()
 
 function renderInicialScren (isLogin = true) {
@@ -42,11 +43,11 @@ async function submitForm (username, password, isLogin, e) {
   const url = `http://localhost:4000/${isLogin? "sign-in": "sign-up"}`
 
   axios.post(url,{username, password})
-  .then(()=>{
+  .then(({data})=>{
     if(!isLogin) return renderInicialScren()
-    
+
     renderGameScreen()
-    setGameUp().play()
+    setGameUp(data.token).play()
   })
   .catch(()=>{
     alert("algo deu errado")
@@ -66,12 +67,16 @@ function renderGameScreen () {
   const blueOptionDiv = createHtmlElement("div", "blue");
   const yellowOptionDiv = createHtmlElement("div", "yellow");
 
+  const startButton = createHtmlElement("button", "start-button");
+  startButton.innerHTML="Começar"
+
   gameDiv.appendChild(redOptionDiv)
   gameDiv.appendChild(greenOptionDiv)
   gameDiv.appendChild(blueOptionDiv)
   gameDiv.appendChild(yellowOptionDiv)
 
   mainGameDiv.appendChild(gameDiv)
+  mainGameDiv.appendChild(startButton)
   rootHtmlElement.appendChild(mainGameDiv)
 }
 

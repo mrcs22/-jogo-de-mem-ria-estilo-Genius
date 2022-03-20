@@ -2,22 +2,28 @@ let order = [];
 let clickedOrder = [];
 let score = 0;
 
-function setGameUp(){
+function setGameUp(userToken){
 const blue = document.querySelector(".blue");
 const red = document.querySelector(".red");
 const green = document.querySelector(".green");
 const yellow = document.querySelector(".yellow");
 
+const axiosConfig = {headers:{authorization: `Bearer ${userToken}`}}
+
 
 const shuffleOrder = () => {
-  const colorOrder = Math.floor(Math.random()*4);
-  order.push(colorOrder);
-  clickedOrder = [];
+  axios.get("http://localhost:4000/moves", axiosConfig)
+  .then(({data})=>{
+    order.push(data.nextMove);
+    clickedOrder = [];
+  
+    for(const i in order){
+      const elementColor = getColorHtmlElement(order[i]);
+      lightColor(elementColor, Number(i) + 1 );
+    }
+  })
+  .catch(()=>alert("Algo deu errado 2"))
 
-  for(const i in order){
-    const elementColor = getColorHtmlElement(order[i]);
-    lightColor(elementColor, Number(i) + 1 );
-  }
 }
 
 const lightColor = (element, number) =>{
@@ -32,6 +38,7 @@ const lightColor = (element, number) =>{
 }
 
 const checkOrder = () =>{
+
   for(const i in clickedOrder){
     if(clickedOrder[i] != order[i]){
       gameOver();
@@ -40,11 +47,15 @@ const checkOrder = () =>{
   }
 
   if(clickedOrder.length == order.length){
-    nextLevel();
+    axios.post(`http://localhost:4000/moves/${clickedOrder[clickedOrder.length -1]}`,{}, axiosConfig)
+    .then(nextLevel)
+    .catch(()=>alert("Algo deu errado 2"))
+    
   }
 }
 
 const selectOrder = (color) =>{
+  
   clickedOrder[clickedOrder.length] = color;
   getColorHtmlElement(color).classList.add("selected");
 

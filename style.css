@@ -30,7 +30,7 @@ form > input:last-of-type {
   width: 70px;
 }
 
-button {
+form > button {
   border: none;
   background-color: inherit;
 
@@ -47,6 +47,15 @@ button {
   justify-content: center;
   align-items: center;
 }
+
+.start-button {
+  width: 70px;
+
+  position: fixed;
+  top: 10vh;
+  left: calc(50vw - 35px);
+}
+
 .genius {
   height: 20vw;
   width: 20vw;
